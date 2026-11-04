@@ -1,0 +1,14 @@
+.titulo-menu {
+  padding: 1rem 1.25rem 0.5rem;
+}
+
+.rol {
+  font: var(--mat-sys-label-large);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mat-sys-primary);
+}
+
+.activo {
+  background-color: var(--mat-sys-secondary-container);
+}

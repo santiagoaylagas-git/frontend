@@ -1,0 +1,105 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>group</mat-icon>Usuarios</h1>
+    <p class="subtitulo">Pacientes, médicos, operadores y administradores de la clínica.</p>
+  </div>
+  <button matButton="filled" (click)="abrirFormulario()">
+    <mat-icon>person_add</mat-icon>
+    Nuevo usuario
+  </button>
+</div>
+
+<form class="filtros" [formGroup]="filtros">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="nombre" autocomplete="off" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Apellido</mat-label>
+    <input matInput formControlName="apellido" autocomplete="off" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Tipo de usuario</mat-label>
+    <mat-select formControlName="rol">
+      <mat-option value="">Todos</mat-option>
+      @for (rol of roles; track rol[0]) {
+        <mat-option [value]="rol[0]">{{ rol[1] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Sede</mat-label>
+    <mat-select formControlName="id_sede">
+      <mat-option value="">Todas</mat-option>
+      @for (sede of sedes(); track sede.id) {
+        <mat-option [value]="sede.id">{{ sede.nombre }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button matButton type="button" (click)="limpiarFiltros()" class="limpiar">
+    <mat-icon>filter_alt_off</mat-icon>
+    Limpiar filtros
+  </button>
+</form>
+
+@if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+} @else if (cargando() && usuarios().length === 0) {
+  <app-cargando />
+} @else if (usuarios().length === 0) {
+  <app-aviso tipo="vacio" mensaje="No hay usuarios que coincidan con los filtros." />
+} @else {
+  <table mat-table [dataSource]="usuarios()" class="tabla" [style.opacity]="cargando() ? 0.5 : 1">
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>Apellido y nombre</th>
+      <td mat-cell *matCellDef="let u">{{ u.apellido }}, {{ u.nombre }}</td>
+    </ng-container>
+    <ng-container matColumnDef="dni">
+      <th mat-header-cell *matHeaderCellDef>DNI</th>
+      <td mat-cell *matCellDef="let u">{{ u.dni }}</td>
+    </ng-container>
+    <ng-container matColumnDef="rol">
+      <th mat-header-cell *matHeaderCellDef>Tipo</th>
+      <td mat-cell *matCellDef="let u">
+        <span class="rol">{{ etiquetaRol(u.rol) }}</span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="sede">
+      <th mat-header-cell *matHeaderCellDef>Sede / cobertura</th>
+      <td mat-cell *matCellDef="let u">
+        @if (u.sede) {
+          {{ u.sede }}
+        } @else if (u.cobertura) {
+          <span class="texto-secundario">Cobertura:</span> {{ u.cobertura }}
+        } @else {
+          <span class="texto-secundario">—</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let u">{{ u.email }}</td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let u" class="columna-acciones">
+        <button matIconButton matTooltip="Editar" aria-label="Editar" (click)="abrirFormulario(u)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+  </table>
+}
+
+<mat-paginator
+  [length]="total()"
+  [pageIndex]="pagina()"
+  [pageSize]="limite()"
+  [pageSizeOptions]="[5, 10, 25, 50]"
+  [hidePageSize]="false"
+  [showFirstLastButtons]="true"
+  (page)="cambiarPagina($event)"
+/>

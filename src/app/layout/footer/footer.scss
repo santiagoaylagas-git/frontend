@@ -1,0 +1,43 @@
+.pie {
+  margin-top: 3rem;
+  padding: 2rem 1.5rem 1rem;
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto 1.5rem;
+}
+
+h3 {
+  margin: 0 0 0.75rem;
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.dato {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+  font: var(--mat-sys-body-small);
+}
+
+.dato a {
+  color: inherit;
+}
+
+.redes {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.legal {
+  margin: 1rem 0 0;
+  text-align: center;
+  font: var(--mat-sys-body-small);
+}

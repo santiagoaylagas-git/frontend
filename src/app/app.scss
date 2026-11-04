@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contenedor {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mat-sys-surface);
+}
+
+// El pie de página queda siempre abajo, aunque la pantalla tenga poco contenido.
+mat-sidenav-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.lateral {
+  width: 260px;
+}
+
+.contenido {
+  flex: 1 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}

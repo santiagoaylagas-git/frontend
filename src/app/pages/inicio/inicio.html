@@ -1,0 +1,70 @@
+@if (estaLogueado()) {
+  <section class="portada">
+    <h1>Hola, {{ nombreCompleto() }}</h1>
+    <p class="subtitulo">Elegí una función del menú para comenzar.</p>
+  </section>
+
+  <div class="tarjetas">
+    @for (opcion of opciones(); track opcion.ruta) {
+      <mat-card class="tarjeta" appearance="outlined">
+        <mat-card-content>
+          <mat-icon class="icono">{{ opcion.icono }}</mat-icon>
+          <h2>{{ opcion.texto }}</h2>
+        </mat-card-content>
+        <mat-card-actions>
+          <a matButton [routerLink]="opcion.ruta">Ir</a>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+} @else {
+  <section class="portada">
+    <h1>Bienvenido a la clínica virtual</h1>
+    <p class="subtitulo">
+      Gestioná tus turnos médicos en línea, sin llamados ni esperas. Registrate como paciente
+      o iniciá sesión si ya tenés una cuenta.
+    </p>
+    <div class="acciones">
+      <a matButton="filled" routerLink="/registro">Registrarme</a>
+      <a matButton="outlined" routerLink="/login">Iniciar sesión</a>
+    </div>
+  </section>
+
+  <mat-card appearance="outlined" class="beneficios">
+    <mat-card-header>
+      <mat-card-title>¿Qué podés hacer con tu cuenta de paciente?</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>event_available</mat-icon>
+          <span matListItemTitle>Solicitar turnos</span>
+          <span matListItemLine>
+            Elegí especialidad, sede, profesional y horario disponible.
+          </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>event</mat-icon>
+          <span matListItemTitle>Consultar y cancelar tus turnos</span>
+          <span matListItemLine>
+            Mirá tus próximos turnos y cancelá los que no puedas asistir.
+          </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>description</mat-icon>
+          <span matListItemTitle>Ver tu historial clínico</span>
+          <span matListItemLine>
+            Accedé a los diagnósticos y tratamientos de tus consultas atendidas.
+          </span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>notifications</mat-icon>
+          <span matListItemTitle>Recibir notificaciones</span>
+          <span matListItemLine>
+            Enterate cuando un turno se confirma, se cancela o queda atendido.
+          </span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+}

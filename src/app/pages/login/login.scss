@@ -1,0 +1,48 @@
+.envoltorio {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.aviso,
+.error-backend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin: 0.5rem 0 0;
+  font: var(--mat-sys-body-medium);
+}
+
+.aviso {
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.error-backend {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.pie-tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  padding: 0 1rem 1rem;
+  font: var(--mat-sys-body-small);
+}

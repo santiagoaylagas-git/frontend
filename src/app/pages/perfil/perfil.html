@@ -1,0 +1,74 @@
+<h1 class="titulo">Mi perfil</h1>
+
+@if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="recargar()" />
+}
+
+@if (datos(); as perfil) {
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <div class="avatar" mat-card-avatar>
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <mat-card-title>{{ perfil.nombre }} {{ perfil.apellido }}</mat-card-title>
+      <mat-card-subtitle>
+        <mat-chip-set>
+          <mat-chip highlighted>{{ etiquetaRol(perfil.rol) }}</mat-chip>
+        </mat-chip-set>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider />
+
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>badge</mat-icon>
+          <span matListItemTitle>DNI</span>
+          <span matListItemLine>{{ perfil.dni }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>mail</mat-icon>
+          <span matListItemTitle>Email</span>
+          <span matListItemLine>{{ perfil.email }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>call</mat-icon>
+          <span matListItemTitle>Teléfono</span>
+          <span matListItemLine>{{ perfil.telefono || 'Sin registrar' }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>cake</mat-icon>
+          <span matListItemTitle>Fecha de nacimiento</span>
+          <span matListItemLine>{{ perfil.fecha_nacimiento | fecha }}</span>
+        </mat-list-item>
+        @if (perfil.id_cobertura !== null) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>local_hospital</mat-icon>
+            <span matListItemTitle>Cobertura</span>
+            <span matListItemLine>{{
+              perfil.cobertura ?? 'Cobertura n.º ' + perfil.id_cobertura
+            }}</span>
+          </mat-list-item>
+        }
+        @if (perfil.id_sede !== null) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>domain</mat-icon>
+            <span matListItemTitle>Sede</span>
+            <span matListItemLine>{{ perfil.sede ?? 'Sede n.º ' + perfil.id_sede }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </mat-card-content>
+    @if (perfil.rol === 'paciente') {
+      <mat-card-actions align="end">
+        <a matButton="filled" routerLink="/paciente/datos">
+          <mat-icon>edit</mat-icon>
+          Modificar mis datos
+        </a>
+      </mat-card-actions>
+    }
+  </mat-card>
+} @else if (cargando()) {
+  <app-cargando />
+}

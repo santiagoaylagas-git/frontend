@@ -1,0 +1,36 @@
+.columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.6rem 1.25rem;
+  margin: 0.75rem 0 1rem;
+}
+
+dt {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+dd {
+  margin: 0;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}

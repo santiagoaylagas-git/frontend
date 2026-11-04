@@ -1,0 +1,17 @@
+<div class="envoltorio">
+  <mat-card appearance="outlined" class="tarjeta">
+    <mat-card-header>
+      <mat-card-title>Crear cuenta de paciente</mat-card-title>
+      <mat-card-subtitle>Completá tus datos para registrarte</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <app-formulario-paciente textoBoton="Crear cuenta" (creado)="cuentaCreada()" />
+    </mat-card-content>
+
+    <mat-card-actions class="pie-tarjeta">
+      <span>¿Ya tenés cuenta?</span>
+      <a matButton routerLink="/login">Iniciar sesión</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

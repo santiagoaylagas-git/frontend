@@ -1,0 +1,108 @@
+<mat-toolbar color="primary" class="barra">
+  @if (estaLogueado()) {
+    <button matIconButton aria-label="Abrir el menú de navegación" (click)="alternarMenu.emit()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
+
+  <a class="marca" routerLink="/">
+    <mat-icon>local_hospital</mat-icon>
+    <span>Clínica Virtual</span>
+  </a>
+
+  <span class="espaciador"></span>
+
+  @if (estaLogueado()) {
+    <button
+      matIconButton
+      class="campana"
+      aria-label="Notificaciones"
+      matTooltip="Notificaciones"
+      [matMenuTriggerFor]="menuNotificaciones"
+      (menuOpened)="notificacionesApi.cargar()"
+    >
+      <mat-icon
+        [matBadge]="noLeidas()"
+        [matBadgeHidden]="noLeidas() === 0"
+        matBadgeColor="warn"
+        aria-hidden="false"
+      >
+        notifications
+      </mat-icon>
+    </button>
+
+    <mat-menu #menuNotificaciones="matMenu" class="menu-notificaciones" xPosition="before">
+      <div class="encabezado-notificaciones" (click)="$event.stopPropagation()">
+        <span>Notificaciones</span>
+        @if (noLeidas() > 0) {
+          <span class="contador">{{ noLeidas() }} sin leer</span>
+        }
+      </div>
+      @if (notificacionesApi.cargando() && notificaciones().length === 0) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+      @if (notificacionesApi.error()) {
+        <p class="sin-notificaciones">{{ notificacionesApi.error() }}</p>
+      }
+      <mat-divider />
+      <div class="lista-notificaciones">
+        @for (notificacion of notificaciones(); track notificacion.id) {
+          <div
+            class="notificacion"
+            [class.no-leida]="!notificacion.leida"
+            (click)="$event.stopPropagation()"
+          >
+            <mat-icon class="icono-tipo">
+              {{ notificacion.leida ? 'drafts' : 'mark_email_unread' }}
+            </mat-icon>
+            <div class="cuerpo">
+              <p class="mensaje">{{ notificacion.mensaje }}</p>
+              <span class="fecha">{{ notificacion.fecha | fecha: true }}</span>
+            </div>
+            @if (!notificacion.leida) {
+              <button
+                matIconButton
+                class="marcar"
+                matTooltip="Marcar como leída"
+                aria-label="Marcar como leída"
+                (click)="marcarLeida(notificacion, $event)"
+              >
+                <mat-icon>done</mat-icon>
+              </button>
+            }
+          </div>
+        } @empty {
+          @if (!notificacionesApi.cargando() && !notificacionesApi.error()) {
+            <p class="sin-notificaciones">No tenés notificaciones.</p>
+          }
+        }
+      </div>
+    </mat-menu>
+
+    <mat-icon class="info-rol" [matTooltip]="'Tipo de usuario: ' + etiquetaRol()"> info </mat-icon>
+
+    <button matButton [matMenuTriggerFor]="menuUsuario" class="usuario">
+      <mat-icon>account_circle</mat-icon>
+      <span class="nombre">{{ nombreCompleto() }}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #menuUsuario="matMenu">
+      <div class="encabezado-menu" mat-menu-item disabled>
+        <span>{{ etiquetaRol() }}</span>
+      </div>
+      <a mat-menu-item routerLink="/perfil">
+        <mat-icon>person</mat-icon>
+        <span>Mi perfil</span>
+      </a>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <span class="bienvenida">Bienvenido a la clínica virtual</span>
+    <a matButton routerLink="/login">Iniciar sesión</a>
+    <a matButton="filled" routerLink="/registro">Registrarse</a>
+  }
+</mat-toolbar>

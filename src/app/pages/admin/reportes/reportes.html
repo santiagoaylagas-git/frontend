@@ -1,0 +1,143 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>bar_chart</mat-icon>Reportes y estadísticas</h1>
+    <p class="subtitulo">Indicadores de turnos, calculados sobre la fecha de cada turno.</p>
+  </div>
+</div>
+
+<form class="filtros" [formGroup]="rango" (ngSubmit)="cargar()">
+  <mat-form-field appearance="outline" class="campo-rango">
+    <mat-label>Rango de fechas</mat-label>
+    <mat-date-range-input [rangePicker]="selectorRango">
+      <input matStartDate formControlName="desde" placeholder="Desde" />
+      <input matEndDate formControlName="hasta" placeholder="Hasta" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="selectorRango" />
+    <mat-date-range-picker #selectorRango />
+    <mat-hint>Vacío = todo el historial</mat-hint>
+  </mat-form-field>
+  <button matButton="filled" type="submit" [disabled]="cargando()">
+    <mat-icon>refresh</mat-icon>
+    Actualizar indicadores
+  </button>
+  <button matButton type="button" (click)="limpiar()">Ver todo el historial</button>
+</form>
+
+@if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+} @else if (!datos()) {
+  <app-cargando texto="Calculando indicadores..." />
+} @else {
+  @let d = datos()!;
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+  <p class="periodo texto-secundario">
+    Período:
+    @if (d.cancelacion.periodo.desde || d.cancelacion.periodo.hasta) {
+      {{ d.cancelacion.periodo.desde ? (d.cancelacion.periodo.desde | fecha) : 'inicio' }} al
+      {{ d.cancelacion.periodo.hasta ? (d.cancelacion.periodo.hasta | fecha) : 'hoy en adelante' }}
+    } @else {
+      todo el historial
+    }
+  </p>
+
+  <div class="tablero">
+    <mat-card appearance="outlined" class="indicador">
+      <mat-card-header>
+        <mat-card-title>Tasa de cancelación</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="numero">{{ d.cancelacion.tasa_cancelacion_porcentaje | number: '1.0-2' }}%</p>
+        <p class="texto-secundario">
+          {{ d.cancelacion.cancelados }} cancelados de {{ d.cancelacion.total }} turnos
+        </p>
+        @if (d.cancelacion.total > 0) {
+          <div class="grafico chico">
+            <canvas
+              baseChart
+              type="pie"
+              [data]="graficoCancelacion()"
+              [options]="opcionesTorta"
+            ></canvas>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="ancho-2">
+      <mat-card-header>
+        <mat-card-title>Turnos por especialidad</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (d.porEspecialidad.especialidades.length === 0) {
+          <app-aviso tipo="vacio" mensaje="No hay turnos en el período." />
+        } @else {
+          <div class="grafico">
+            <canvas
+              baseChart
+              type="bar"
+              [data]="graficoEspecialidades()"
+              [options]="opcionesBarras"
+            ></canvas>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Turnos por sede</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (d.porSede.sedes.length === 0) {
+          <app-aviso tipo="vacio" mensaje="No hay turnos en el período." />
+        } @else {
+          <div class="grafico">
+            <canvas
+              baseChart
+              type="doughnut"
+              [data]="graficoSedes()"
+              [options]="opcionesTorta"
+            ></canvas>
+          </div>
+          <ul class="leyenda">
+            @for (sede of d.porSede.sedes; track sede.id_sede) {
+              <li>
+                {{ sede.nombre }}: <strong>{{ sede.cantidad }}</strong>
+              </li>
+            }
+          </ul>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="ancho-2">
+      <mat-card-header>
+        <mat-card-title>Ranking de médicos por turnos atendidos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (d.ranking.ranking.length === 0) {
+          <app-aviso tipo="vacio" mensaje="Ningún médico atendió turnos en el período." />
+        } @else {
+          <table mat-table [dataSource]="d.ranking.ranking" class="tabla">
+            <ng-container matColumnDef="posicion">
+              <th mat-header-cell *matHeaderCellDef>#</th>
+              <td mat-cell *matCellDef="let fila; let i = index">{{ i + 1 }}</td>
+            </ng-container>
+            <ng-container matColumnDef="medico">
+              <th mat-header-cell *matHeaderCellDef>Médico</th>
+              <td mat-cell *matCellDef="let fila">{{ fila.apellido }}, {{ fila.nombre }}</td>
+            </ng-container>
+            <ng-container matColumnDef="atendidos">
+              <th mat-header-cell *matHeaderCellDef>Turnos atendidos</th>
+              <td mat-cell *matCellDef="let fila">{{ fila.turnos_atendidos }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnasRanking"></tr>
+            <tr mat-row *matRowDef="let fila; columns: columnasRanking"></tr>
+          </table>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

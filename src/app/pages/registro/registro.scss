@@ -1,0 +1,20 @@
+.envoltorio {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 640px;
+  overflow: hidden;
+}
+
+.pie-tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  padding: 0 1rem 1rem;
+  font: var(--mat-sys-body-small);
+}

@@ -1,0 +1,72 @@
+<div class="envoltorio">
+  <mat-card appearance="outlined" class="tarjeta">
+    @if (enviando()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+
+    <mat-card-header>
+      <mat-card-title>Iniciar sesión</mat-card-title>
+      <mat-card-subtitle>Ingresá con tu DNI y contraseña</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (sesionVencida()) {
+        <p class="aviso">
+          <mat-icon>schedule</mat-icon>
+          <span>Tu sesión venció. Ingresá de nuevo para continuar.</span>
+        </p>
+      }
+
+      @if (errorBackend()) {
+        <p class="error-backend" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorBackend() }}</span>
+        </p>
+      }
+
+      <form [formGroup]="formulario" (ngSubmit)="enviar()" class="formulario">
+        <mat-form-field appearance="outline">
+          <mat-label>DNI</mat-label>
+          <input matInput formControlName="dni" inputmode="numeric" autocomplete="username" />
+          <mat-icon matSuffix>badge</mat-icon>
+          @if (formulario.controls.dni.hasError('required')) {
+            <mat-error>El DNI es obligatorio.</mat-error>
+          } @else if (formulario.controls.dni.hasError('pattern')) {
+            <mat-error>El DNI debe tener 7 u 8 dígitos, sin puntos.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="ocultarPassword() ? 'password' : 'text'"
+            autocomplete="current-password"
+          />
+          <button
+            matIconButton
+            matSuffix
+            type="button"
+            [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+            (click)="ocultarPassword.set(!ocultarPassword())"
+          >
+            <mat-icon>{{ ocultarPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (formulario.controls.password.hasError('required')) {
+            <mat-error>La contraseña es obligatoria.</mat-error>
+          }
+        </mat-form-field>
+
+        <button matButton="filled" type="submit" [disabled]="enviando()">
+          Ingresar
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="pie-tarjeta">
+      <span>¿No tenés cuenta?</span>
+      <a matButton routerLink="/registro">Registrate como paciente</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

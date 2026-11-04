@@ -1,0 +1,37 @@
+.fila-turno {
+  cursor: pointer;
+}
+
+.fila-turno:hover,
+.fila-expandida {
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.fila-detalle {
+  height: 0;
+}
+
+.celda-detalle {
+  padding: 0 16px;
+  border-bottom-width: 0;
+}
+
+.fila-expandida + .fila-detalle .celda-detalle {
+  border-bottom-width: 1px;
+}
+
+.detalle {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 0 1rem 2.5rem;
+
+  p {
+    margin: 0.2rem 0 0;
+  }
+}
+
+.etiqueta {
+  font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+}

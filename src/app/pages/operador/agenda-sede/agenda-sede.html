@@ -1,0 +1,109 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>calendar_month</mat-icon>Agenda y turnos</h1>
+    <p class="subtitulo">{{ fecha() | fecha: 'larga' }} — {{ nombreSede() }}</p>
+  </div>
+  @if (esMiSede()) {
+    <button matButton="filled" (click)="nuevaAgenda()" [disabled]="!!error()">
+      <mat-icon>add</mat-icon>
+      Nueva agenda
+    </button>
+  }
+</div>
+
+<div class="filtros">
+  <button matIconButton matTooltip="Día anterior" aria-label="Día anterior" (click)="moverDia(-1)">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha</mat-label>
+    <input
+      matInput
+      [matDatepicker]="selectorFecha"
+      [value]="fechaComoDate()"
+      (dateChange)="cambiarFecha($event.value)"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+    <mat-datepicker #selectorFecha />
+  </mat-form-field>
+  <button matIconButton matTooltip="Día siguiente" aria-label="Día siguiente" (click)="moverDia(1)">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  <mat-form-field appearance="outline">
+    <mat-label>Sede</mat-label>
+    <mat-select [ngModel]="idSede()" (ngModelChange)="cambiarSede($event)">
+      @for (sede of sedes(); track sede.id) {
+        <mat-option [value]="sede.id">
+          {{ sede.nombre }}{{ sede.id === miSede ? ' (mi sede)' : '' }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (!esMiSede() && !error()) {
+  <app-aviso
+    tipo="info"
+    mensaje="Estás consultando otra sede: podés ver la agenda, pero solo podés modificar la agenda y los turnos de tu sede."
+  />
+}
+
+@if (cargando()) {
+  <app-cargando />
+} @else if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="inicializar()" />
+} @else if (filas().length === 0) {
+  <app-aviso tipo="vacio" mensaje="Ningún médico tiene agenda para esa fecha en esa sede." />
+} @else {
+  <table mat-table [dataSource]="filas()" class="tabla">
+    <ng-container matColumnDef="medico">
+      <th mat-header-cell *matHeaderCellDef>Médico</th>
+      <td mat-cell *matCellDef="let f">{{ f.nombre }}</td>
+    </ng-container>
+    <ng-container matColumnDef="especialidad">
+      <th mat-header-cell *matHeaderCellDef>Especialidad</th>
+      <td mat-cell *matCellDef="let f">{{ f.especialidades }}</td>
+    </ng-container>
+    <ng-container matColumnDef="horario">
+      <th mat-header-cell *matHeaderCellDef>Horario de atención</th>
+      <td mat-cell *matCellDef="let f">
+        @for (rango of f.rangos; track rango.id) {
+          <span class="rango">
+            {{ rango.hora_entrada }} a {{ rango.hora_salida }} h
+            @if (f.rangos.length > 1) {
+              <span class="texto-secundario">({{ rango.especialidad }})</span>
+            }
+          </span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let f" class="columna-acciones">
+        @if (esMiSede()) {
+          <button
+            matIconButton
+            matTooltip="Editar la agenda del médico"
+            aria-label="Editar la agenda del médico"
+            (click)="editarAgenda(f)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            matIconButton
+            matTooltip="Ver turnos confirmados"
+            aria-label="Ver turnos confirmados"
+            (click)="verTurnos(f)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        } @else {
+          <span class="texto-secundario">Solo consulta</span>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+  </table>
+}

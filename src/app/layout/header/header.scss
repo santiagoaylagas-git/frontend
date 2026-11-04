@@ -1,0 +1,42 @@
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 0.5rem;
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.espaciador {
+  flex: 1 1 auto;
+}
+
+.bienvenida {
+  margin-right: 1rem;
+}
+
+.usuario .nombre {
+  margin: 0 0.25rem;
+}
+
+.info-rol {
+  cursor: help;
+}
+
+@media (max-width: 700px) {
+  .bienvenida,
+  .usuario .nombre {
+    display: none;
+  }
+}
+
+.campana mat-icon {
+  overflow: visible;
+}

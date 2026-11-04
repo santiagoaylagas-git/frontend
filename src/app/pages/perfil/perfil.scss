@@ -1,0 +1,14 @@
+.titulo {
+  margin: 0 0 1.5rem;
+  font: var(--mat-sys-headline-medium);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+}
+
+.avatar mat-icon {
+  transform: scale(1.6);
+  color: var(--mat-sys-primary);
+}
