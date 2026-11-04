@@ -1,8 +1,12 @@
 # Frontend — Sistema de Gestión de Turnos Médicos
 
 Aplicación Angular del trabajo práctico integrador de Programación 2. Consume la API REST
-del backend, que vive en un repositorio aparte
-(`Trabajo-Practico-Integrador-Sistema-de-Gestion-de-Turnos-Medicos`).
+del backend, que vive en un repositorio aparte:
+
+| Repositorio | Rama de la entrega |
+|-------------|--------------------|
+| Frontend: https://github.com/santiagoaylagas-git/frontend | `entrega-frontend` |
+| Backend: https://github.com/santiagoaylagas-git/backend | `claude/focused-keller-46bm9i` (semanas 1 a 4 + cambios para el frontend) |
 
 Esta es la **entrega final del frontend** (semanas 2 a 4): la aplicación queda completa para
 los cuatro roles — paciente, médico, operador y administrador — y lista para la defensa.
@@ -29,13 +33,21 @@ registra solo en esa pantalla, para no sumarlo a la carga inicial de la aplicaci
 
 ## Cómo levantar el sistema completo desde cero
 
-Se necesitan los dos repositorios, uno al lado del otro, y MySQL o MariaDB corriendo
-(por ejemplo, con XAMPP: iniciar el módulo **MySQL** desde el panel de control).
+Se necesitan Node.js, Git y MySQL o MariaDB corriendo (por ejemplo, con XAMPP: iniciar el
+módulo **MySQL** desde el panel de control).
+
+```bash
+git clone -b claude/focused-keller-46bm9i https://github.com/santiagoaylagas-git/backend
+git clone -b entrega-frontend https://github.com/santiagoaylagas-git/frontend
+```
 
 ### 1. Backend y base de datos
 
+El código de la API está en la subcarpeta `backend/` del repositorio del backend; el script de la
+base (`clinica_ampliada.sql.txt`) está en la raíz de ese repositorio.
+
 ```bash
-cd Trabajo-Practico-Integrador-Sistema-de-Gestion-de-Turnos-Medicos/backend
+cd backend/backend
 npm install
 cp .env.example .env        # en Windows: copy .env.example .env
 ```
@@ -80,7 +92,7 @@ Alternativas para importar la base (por ejemplo, desde phpMyAdmin) en el `README
 En otra terminal:
 
 ```bash
-cd clinica-frontend
+cd frontend
 npm install
 npm start          # equivale a ng serve
 ```
