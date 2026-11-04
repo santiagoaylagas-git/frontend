@@ -123,7 +123,7 @@ export class Usuarios {
 
   abrirFormulario(usuario?: UsuarioListado): void {
     this.dialogo
-      .open(UsuarioDialogo, { data: { id: usuario?.id }, width: '640px' })
+      .open(UsuarioDialogo, { data: { id: usuario?.id }, width: '640px', maxWidth: '90vw' })
       .afterClosed()
       .pipe(filter(Boolean))
       .subscribe(() => {

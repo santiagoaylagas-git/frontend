@@ -184,7 +184,8 @@ export class AgendaSede {
     if (!medico) return;
     this.dialogo
       .open(AgendaMedicoDialogo, {
-        width: '760px',
+        width: '820px',
+        maxWidth: '90vw',
         data: { medico, fecha: this.fecha(), idSede: this.miSede, sedes: this.sedes() },
       })
       .afterClosed()
@@ -194,7 +195,8 @@ export class AgendaSede {
   verTurnos(fila: FilaMedico): void {
     this.dialogo
       .open(TurnosMedicoDialogo, {
-        width: '760px',
+        width: '820px',
+        maxWidth: '90vw',
         data: { nombreMedico: fila.nombre, idMedico: fila.idMedico, fecha: this.fecha() },
       })
       .afterClosed()
