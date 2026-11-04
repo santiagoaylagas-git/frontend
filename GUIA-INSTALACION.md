@@ -292,7 +292,7 @@ Para apagar: `Ctrl + C` en cada terminal y **Stop** en XAMPP.
 | `Access denied for user 'root'@'localhost'` | Contraseña de MySQL distinta | Poner la contraseña correcta en `DB_PASSWORD` del `.env` |
 | `Unknown database 'clinica'` | No se importó la base | `npm run db:importar` |
 | MySQL de XAMPP no arranca (queda en rojo) | El puerto 3306 lo usa otro MySQL | Detener el otro servicio MySQL (Servicios de Windows) o usarlo en lugar de XAMPP |
-| `EADDRINUSE :::3000` | Ya hay un backend corriendo | Cerrar la otra terminal o cambiar `PORT` (y entonces también `apiUrl` en `frontend/src/environments/`) |
+| "El puerto 3000 ya está en uso" (`EADDRINUSE`) | Ya hay un backend corriendo | Cerrar la otra terminal o cambiar `PORT` (y entonces también `apiUrl` en `frontend/src/environments/`) |
 | `Port 4200 is already in use` | Ya hay un frontend corriendo | Cerrar la otra terminal, o aceptar el otro puerto que ofrece Angular |
 | `'ng' no se reconoce como un comando` | Angular CLI no está global | Usar `npm start` / `npm run build` (usan el CLI del proyecto) |
 | `The Angular CLI requires a minimum Node.js version` | Node viejo | Instalar Node 22 o 24 LTS y abrir una terminal nueva |
