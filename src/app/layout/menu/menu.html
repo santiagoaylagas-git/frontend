@@ -8,7 +8,6 @@
     routerLink="/"
     routerLinkActive="activo"
     [routerLinkActiveOptions]="{ exact: true }"
-    (click)="navego.emit()"
   >
     <mat-icon matListItemIcon>home</mat-icon>
     <span matListItemTitle>Inicio</span>
@@ -17,12 +16,7 @@
   <mat-divider />
 
   @for (opcion of opciones(); track opcion.ruta) {
-    <a
-      mat-list-item
-      [routerLink]="opcion.ruta"
-      routerLinkActive="activo"
-      (click)="navego.emit()"
-    >
+    <a mat-list-item [routerLink]="opcion.ruta" routerLinkActive="activo">
       <mat-icon matListItemIcon>{{ opcion.icono }}</mat-icon>
       <span matListItemTitle>{{ opcion.texto }}</span>
     </a>
@@ -30,7 +24,7 @@
 
   <mat-divider />
 
-  <a mat-list-item routerLink="/perfil" routerLinkActive="activo" (click)="navego.emit()">
+  <a mat-list-item routerLink="/perfil" routerLinkActive="activo">
     <mat-icon matListItemIcon>person</mat-icon>
     <span matListItemTitle>Mi perfil</span>
   </a>

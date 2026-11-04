@@ -12,21 +12,3 @@
   transform: scale(1.6);
   color: var(--mat-sys-primary);
 }
-
-.cargando {
-  display: flex;
-  justify-content: center;
-  padding: 3rem 0;
-}
-
-.error-backend {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  background-color: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
-}

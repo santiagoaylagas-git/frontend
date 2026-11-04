@@ -1,0 +1,42 @@
+.campo-rango {
+  width: 300px !important;
+}
+
+.filtros button {
+  margin-top: 0.5rem;
+}
+
+.periodo {
+  margin: 0.5rem 0 1rem;
+}
+
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.ancho-2 {
+  grid-column: span 2;
+}
+
+.numero {
+  margin: 0.5rem 0 0;
+  font: var(--mat-sys-display-medium);
+  color: var(--mat-sys-primary);
+}
+
+.grafico {
+  position: relative;
+  height: 260px;
+  margin-top: 0.75rem;
+}
+
+.grafico.chico {
+  height: 180px;
+}
+
+.leyenda {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}

@@ -25,6 +25,80 @@ export interface Perfil {
   rol: Rol;
   id_sede: number | null;
   id_cobertura: number | null;
+  /** Nombre de la sede (operador y médico). */
+  sede?: string | null;
+  /** Nombre de la cobertura (paciente). */
+  cobertura?: string | null;
+}
+
+/** Cuerpo de PUT /auth/perfil: lo único que el paciente puede modificar. */
+export interface DatosPersonalesPaciente {
+  email: string;
+  telefono: string;
+  id_cobertura: number;
+  password?: string;
+}
+
+/** Fila del listado de usuarios del administrador. */
+export interface UsuarioListado {
+  id: number;
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono: string;
+  fecha_nacimiento: string;
+  rol: Rol;
+  id_sede: number | null;
+  sede: string | null;
+  id_cobertura: number | null;
+  cobertura: string | null;
+}
+
+export interface PaginaUsuarios {
+  usuarios: UsuarioListado[];
+  total: number;
+  pagina: number;
+  limite: number;
+}
+
+export interface FiltroUsuarios {
+  nombre?: string;
+  apellido?: string;
+  rol?: Rol | '';
+  id_sede?: number | null;
+  pagina: number;
+  limite: number;
+}
+
+/** Usuario completo para editar (GET /usuarios/:id). */
+export interface UsuarioDetalle {
+  id: number;
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono: string;
+  fecha_nacimiento: string;
+  rol: Rol;
+  id_sede: number | null;
+  id_cobertura: number | null;
+  especialidades: number[];
+}
+
+/** Cuerpo de POST /usuarios y PUT /usuarios/:id. */
+export interface DatosUsuario {
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono: string;
+  fecha_nacimiento: string;
+  rol: Rol;
+  password?: string;
+  id_sede?: number | null;
+  id_cobertura?: number | null;
+  especialidades?: number[];
 }
 
 /** Credenciales enviadas a POST /auth/login. */

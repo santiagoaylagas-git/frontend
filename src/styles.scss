@@ -37,3 +37,144 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+// ---------------------------------------------------------------------------
+// Estilos compartidos por las pantallas (se definen acá para no repetirlos en
+// cada componente).
+// ---------------------------------------------------------------------------
+
+.encabezado-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    font: var(--mat-sys-headline-medium);
+  }
+
+  .subtitulo {
+    margin: 0.25rem 0 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 1rem;
+  margin-bottom: 0.5rem;
+
+  .mat-mdc-form-field {
+    width: 220px;
+  }
+}
+
+.tabla {
+  width: 100%;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  overflow: hidden;
+
+  th.mat-mdc-header-cell {
+    font-weight: 600;
+    background-color: var(--mat-sys-surface-container);
+  }
+
+  .columna-acciones {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+.texto-secundario {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.boton-peligro.mat-mdc-unelevated-button:not(:disabled) {
+  background-color: var(--mat-sys-error);
+  color: var(--mat-sys-on-error);
+}
+
+.icono-peligro {
+  color: var(--mat-sys-error);
+}
+
+// Menú desplegable de notificaciones del encabezado.
+.menu-notificaciones.mat-mdc-menu-panel {
+  width: 400px;
+  max-width: 400px;
+}
+
+.encabezado-notificaciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font: var(--mat-sys-title-small);
+
+  .contador {
+    font: var(--mat-sys-label-medium);
+    color: var(--mat-sys-primary);
+  }
+}
+
+.lista-notificaciones {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.notificacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem 0.65rem 1rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  cursor: default;
+
+  .icono-tipo {
+    margin-top: 2px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .cuerpo {
+    flex: 1 1 auto;
+  }
+
+  .mensaje {
+    margin: 0 0 0.2rem;
+    font: var(--mat-sys-body-medium);
+  }
+
+  .fecha {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &.no-leida {
+    background-color: var(--mat-sys-primary-container);
+
+    .mensaje {
+      font-weight: 600;
+    }
+
+    .icono-tipo {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.sin-notificaciones {
+  margin: 0;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}

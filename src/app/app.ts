@@ -17,13 +17,9 @@ export class App {
   private readonly auth = inject(AuthService);
 
   readonly estaLogueado = this.auth.estaLogueado;
-  readonly menuAbierto = signal(false);
+  readonly menuAbierto = signal(true);
 
   alternarMenu(): void {
     this.menuAbierto.update((abierto) => !abierto);
-  }
-
-  cerrarMenu(): void {
-    this.menuAbierto.set(false);
   }
 }

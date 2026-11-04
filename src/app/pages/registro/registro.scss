@@ -10,38 +10,6 @@
   overflow: hidden;
 }
 
-.formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 1rem;
-}
-
-.fila {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 1rem;
-}
-
-@media (max-width: 600px) {
-  .fila {
-    grid-template-columns: 1fr;
-  }
-}
-
-.error-backend {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin: 0.5rem 0;
-  background-color: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
-  font: var(--mat-sys-body-medium);
-}
-
 .pie-tarjeta {
   display: flex;
   align-items: center;

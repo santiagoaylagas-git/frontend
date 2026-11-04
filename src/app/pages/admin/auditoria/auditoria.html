@@ -1,0 +1,101 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>history</mat-icon>Auditoría</h1>
+    <p class="subtitulo">Registro de altas, bajas y modificaciones. Solo lectura.</p>
+  </div>
+</div>
+
+<form class="filtros" [formGroup]="filtros">
+  <mat-form-field appearance="outline">
+    <mat-label>Usuario</mat-label>
+    <mat-select formControlName="id_usuario">
+      <mat-option value="">Todos</mat-option>
+      @for (usuario of opciones().usuarios; track usuario.id) {
+        <mat-option [value]="usuario.id">
+          {{ usuario.apellido }}, {{ usuario.nombre }} ({{ etiquetasRol[usuario.rol] }})
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Entidad</mat-label>
+    <mat-select formControlName="entidad">
+      <mat-option value="">Todas</mat-option>
+      @for (entidad of opciones().entidades; track entidad) {
+        <mat-option [value]="entidad"
+          ><span class="entidad">{{ entidad }}</span></mat-option
+        >
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="rango" style="width: 300px">
+    <mat-label>Rango de fechas</mat-label>
+    <mat-date-range-input [rangePicker]="selectorRango">
+      <input matStartDate formControlName="desde" placeholder="Desde" />
+      <input matEndDate formControlName="hasta" placeholder="Hasta" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="selectorRango" />
+    <mat-date-range-picker #selectorRango />
+    <mat-hint>DD/MM/AAAA – DD/MM/AAAA</mat-hint>
+  </mat-form-field>
+
+  <button matButton type="button" (click)="limpiarFiltros()">
+    <mat-icon>filter_alt_off</mat-icon>
+    Limpiar filtros
+  </button>
+</form>
+
+@if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+} @else if (cargando() && registros().length === 0) {
+  <app-cargando />
+} @else if (registros().length === 0) {
+  <app-aviso tipo="vacio" mensaje="No hay registros de auditoría para esos filtros." />
+} @else {
+  <table mat-table [dataSource]="registros()" class="tabla" [style.opacity]="cargando() ? 0.5 : 1">
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef>Fecha</th>
+      <td mat-cell *matCellDef="let r">{{ r.fecha | fecha: true }}</td>
+    </ng-container>
+    <ng-container matColumnDef="usuario">
+      <th mat-header-cell *matHeaderCellDef>Usuario</th>
+      <td mat-cell *matCellDef="let r">
+        {{ r.apellido }}, {{ r.nombre }}
+        <div class="texto-secundario">{{ etiquetaRol(r.rol) }}</div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="accion">
+      <th mat-header-cell *matHeaderCellDef>Acción</th>
+      <td mat-cell *matCellDef="let r">
+        <span class="accion" [class]="r.accion">{{ r.accion }}</span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="entidad">
+      <th mat-header-cell *matHeaderCellDef>Entidad</th>
+      <td mat-cell *matCellDef="let r">
+        <span class="entidad">{{ r.entidad }}</span>
+        @if (r.id_entidad) {
+          <span class="texto-secundario"> #{{ r.id_entidad }}</span>
+        }
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="detalle">
+      <th mat-header-cell *matHeaderCellDef>Detalle</th>
+      <td mat-cell *matCellDef="let r" class="detalle">{{ r.detalle }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+  </table>
+}
+
+<mat-paginator
+  [length]="total()"
+  [pageIndex]="pagina()"
+  [pageSize]="limite()"
+  [pageSizeOptions]="[10, 25, 50, 100]"
+  [showFirstLastButtons]="true"
+  (page)="cambiarPagina($event)"
+/>

@@ -1,0 +1,95 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>event</mat-icon>Mis turnos</h1>
+    <p class="subtitulo">Ordenados del más próximo al menos próximo.</p>
+  </div>
+  <a matButton="filled" routerLink="/paciente/solicitar-turno">
+    <mat-icon>add</mat-icon>
+    Solicitar turno
+  </a>
+</div>
+
+@if (cargando()) {
+  <app-cargando />
+} @else if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+} @else if (lista().length === 0) {
+  <app-aviso tipo="vacio" mensaje="Todavía no tenés turnos. Podés solicitar uno desde el menú." />
+} @else {
+  <h2 class="seccion">Próximos</h2>
+  @if (proximos().length === 0) {
+    <app-aviso tipo="vacio" mensaje="No tenés turnos próximos." />
+  } @else {
+    <ng-container *ngTemplateOutlet="listaTurnos; context: { $implicit: proximos() }" />
+  }
+
+  @if (anteriores().length > 0) {
+    <h2 class="seccion">Anteriores</h2>
+    <ng-container *ngTemplateOutlet="listaTurnos; context: { $implicit: anteriores() }" />
+  }
+}
+
+<ng-template #listaTurnos let-turnos>
+  <mat-accordion multi>
+    @for (turno of turnos; track turno.id) {
+      <mat-expansion-panel [class]="'turno ' + turno.estado">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span class="cuando">{{ turno.fecha | fecha }} · {{ turno.hora }} h</span>
+          </mat-panel-title>
+          <mat-panel-description>
+            <span class="quien"
+              >{{ turno.especialidad }} — {{ turno.medico_nombre }}
+              {{ turno.medico_apellido }}</span
+            >
+            <app-estado-turno [estado]="turno.estado" />
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <dl class="detalle">
+          <dt>Fecha</dt>
+          <dd class="capitalizar">{{ turno.fecha | fecha: 'larga' }}, {{ turno.hora }} h</dd>
+          <dt>Especialista</dt>
+          <dd>Dr/a. {{ turno.medico_nombre }} {{ turno.medico_apellido }}</dd>
+          <dt>Especialidad</dt>
+          <dd>{{ turno.especialidad }}</dd>
+          <dt>Sede</dt>
+          <dd>{{ turno.sede }}</dd>
+          <dt>Cobertura</dt>
+          <dd>{{ turno.cobertura ?? 'Sin cobertura' }}</dd>
+          @if (turno.nota) {
+            <dt>Motivo</dt>
+            <dd>{{ turno.nota }}</dd>
+          }
+        </dl>
+
+        @if (turno.estado === 'atendido') {
+          <div class="historial">
+            <h3><mat-icon>description</mat-icon>Historial clínico</h3>
+            @if (turno.diagnostico) {
+              <dl class="detalle">
+                <dt>Diagnóstico</dt>
+                <dd>{{ turno.diagnostico }}</dd>
+                <dt>Tratamiento</dt>
+                <dd>{{ turno.tratamiento || '—' }}</dd>
+                <dt>Observaciones</dt>
+                <dd>{{ turno.observaciones || '—' }}</dd>
+              </dl>
+            } @else {
+              <p class="texto-secundario">El médico todavía no cargó el historial de este turno.</p>
+            }
+          </div>
+        }
+
+        @if (turno.estado === 'confirmado') {
+          <mat-action-row>
+            <button matButton (click)="cancelar(turno)">
+              <mat-icon class="icono-peligro">event_busy</mat-icon>
+              Cancelar turno
+            </button>
+          </mat-action-row>
+        }
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+</ng-template>

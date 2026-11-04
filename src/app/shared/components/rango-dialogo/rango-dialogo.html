@@ -1,0 +1,110 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Modificar rango horario' : 'Nuevo rango horario' }}</h2>
+
+<mat-dialog-content>
+  @if (enviando()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <form [formGroup]="formulario" id="formulario-rango" (ngSubmit)="guardar()" class="formulario">
+    <mat-form-field appearance="outline">
+      <mat-label>Médico</mat-label>
+      <mat-select formControlName="id_medico">
+        @for (medico of datos.medicos; track medico.id) {
+          <mat-option [value]="medico.id">{{ nombreMedico(medico) }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>Elegí un médico.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha</mat-label>
+      <input matInput [matDatepicker]="selectorFecha" formControlName="fecha" />
+      <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+      <mat-datepicker #selectorFecha />
+      @if (formulario.controls.fecha.hasError('required')) {
+        <mat-error>La fecha es obligatoria (DD/MM/AAAA).</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="fila">
+      <mat-form-field appearance="outline">
+        <mat-label>Hora de entrada</mat-label>
+        <mat-select formControlName="hora_entrada">
+          @for (hora of horarios; track hora) {
+            <mat-option [value]="hora">{{ hora }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>Elegí la hora de entrada.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Hora de salida</mat-label>
+        <mat-select formControlName="hora_salida">
+          @for (hora of horarios; track hora) {
+            <mat-option [value]="hora">{{ hora }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>Elegí la hora de salida.</mat-error>
+      </mat-form-field>
+    </div>
+
+    @if (formulario.hasError('horario') && formulario.controls.hora_salida.touched) {
+      <app-aviso
+        mensaje="La hora de salida tiene que ser posterior a la de entrada (al menos un turno de 30 minutos)."
+      />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Especialidad</mat-label>
+      <mat-select formControlName="id_especialidad">
+        @for (especialidad of especialidades(); track especialidad.id) {
+          <mat-option [value]="especialidad.id">{{ especialidad.descripcion }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>Solo las especialidades del médico</mat-hint>
+      <mat-error>Elegí una especialidad.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sede</mat-label>
+      <mat-select formControlName="id_sede">
+        @for (sede of datos.sedes; track sede.id) {
+          <mat-option [value]="sede.id">{{ sede.nombre }}</mat-option>
+        }
+      </mat-select>
+      @if (datos.sedeFija) {
+        <mat-hint>Solo podés cargar agenda en tu sede</mat-hint>
+      }
+      <mat-error>Elegí una sede.</mat-error>
+    </mat-form-field>
+
+    @if (horasConfirmadas.length > 0) {
+      <app-aviso tipo="info">
+        Este rango tiene {{ horasConfirmadas.length }} turno(s) confirmado(s) ({{
+          horasConfirmadas.join(', ')
+        }}). El horario debe seguir incluyéndolos y no se puede cambiar el día, la sede ni la
+        especialidad.
+      </app-aviso>
+    }
+    @if (formulario.hasError('contextoConTurnos')) {
+      <app-aviso
+        mensaje="No se puede cambiar el día, la sede ni la especialidad: el rango tiene turnos confirmados. Cancelalos primero."
+      />
+    }
+    @if (formulario.hasError('turnosAfuera')) {
+      <app-aviso
+        mensaje="El nuevo horario dejaría turnos confirmados afuera. Elegí un horario que los incluya o cancelá esos turnos primero."
+      />
+    }
+    @if (errorBackend()) {
+      <app-aviso [mensaje]="errorBackend()" />
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton mat-dialog-close type="button">Cancelar</button>
+  <button matButton="filled" type="submit" form="formulario-rango" [disabled]="enviando()">
+    Guardar
+  </button>
+</mat-dialog-actions>

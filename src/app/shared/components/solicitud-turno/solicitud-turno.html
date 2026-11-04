@@ -1,0 +1,189 @@
+@if (cargandoCatalogos()) {
+  <app-cargando texto="Cargando especialidades y sedes..." />
+} @else {
+  @if (error()) {
+    <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargarCatalogos()" />
+  }
+
+  <form [formGroup]="formulario">
+    <mat-stepper linear orientation="vertical" class="pasos">
+      <!-- 1. Especialidad -->
+      <mat-step [stepControl]="formulario.controls.especialidad" label="Especialidad">
+        <mat-form-field appearance="outline" class="campo">
+          <mat-label>Especialidad</mat-label>
+          <mat-select formControlName="especialidad">
+            @for (especialidad of especialidades(); track especialidad.id) {
+              <mat-option [value]="especialidad.id">{{ especialidad.descripcion }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>Elegí una especialidad.</mat-error>
+        </mat-form-field>
+        <div class="acciones">
+          <button matButton="filled" matStepperNext type="button">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- 2. Sede -->
+      <mat-step [stepControl]="formulario.controls.sede" label="Sede">
+        @if (sedeFija()) {
+          <app-aviso tipo="info">
+            El turno se asigna en tu sede: <strong>{{ sedeElegida()?.nombre }}</strong> ({{
+              sedeElegida()?.direccion
+            }}).
+          </app-aviso>
+        } @else {
+          <mat-form-field appearance="outline" class="campo">
+            <mat-label>Sede</mat-label>
+            <mat-select formControlName="sede">
+              @for (sede of sedes(); track sede.id) {
+                <mat-option [value]="sede.id">{{ sede.nombre }} — {{ sede.direccion }}</mat-option>
+              }
+            </mat-select>
+            <mat-error>Elegí una sede.</mat-error>
+          </mat-form-field>
+        }
+        <div class="acciones">
+          <button matButton matStepperPrevious type="button">Atrás</button>
+          <button matButton="filled" matStepperNext type="button">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- 3. Médico -->
+      <mat-step [stepControl]="formulario.controls.medico" label="Profesional">
+        @if (cargandoMedicos()) {
+          <app-cargando texto="Buscando profesionales..." />
+        } @else if (medicos().length === 0) {
+          <app-aviso
+            tipo="vacio"
+            mensaje="No hay profesionales con agenda disponible para esa especialidad en esa sede. Probá con otra sede o especialidad."
+          />
+        } @else {
+          <mat-form-field appearance="outline" class="campo">
+            <mat-label>Profesional</mat-label>
+            <mat-select formControlName="medico">
+              @for (medico of medicos(); track medico.id) {
+                <mat-option [value]="medico.id"
+                  >Dr/a. {{ medico.nombre }} {{ medico.apellido }}</mat-option
+                >
+              }
+            </mat-select>
+            <mat-error>Elegí un profesional.</mat-error>
+          </mat-form-field>
+        }
+        <div class="acciones">
+          <button matButton matStepperPrevious type="button">Atrás</button>
+          <button matButton="filled" matStepperNext type="button">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- 4. Fecha -->
+      <mat-step [stepControl]="formulario.controls.fecha" label="Fecha">
+        @if (cargandoFechas()) {
+          <app-cargando texto="Buscando fechas con agenda..." />
+        } @else if (fechas().length === 0) {
+          <app-aviso tipo="vacio" mensaje="El profesional no tiene fechas con turnos libres." />
+        } @else {
+          <p class="ayuda">
+            Solo se pueden elegir los días en que el profesional atiende y tiene turnos libres.
+          </p>
+          <mat-card appearance="outlined" class="calendario">
+            <mat-calendar
+              [startAt]="fechaSeleccionada() ?? primeraFecha()"
+              [minDate]="primeraFecha()"
+              [maxDate]="ultimaFecha()"
+              [dateFilter]="filtroFechas"
+              [selected]="fechaSeleccionada()"
+              (selectedChange)="elegirFecha($event)"
+            />
+          </mat-card>
+          @if (valores().fecha; as fecha) {
+            <p class="elegido">
+              Fecha elegida: <strong>{{ fecha | fecha: 'larga' }}</strong>
+            </p>
+          }
+        }
+        <div class="acciones">
+          <button matButton matStepperPrevious type="button">Atrás</button>
+          <button matButton="filled" matStepperNext type="button">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- 5. Horario -->
+      <mat-step [stepControl]="formulario.controls.hora" label="Horario">
+        @if (cargandoHorarios()) {
+          <app-cargando texto="Buscando horarios libres..." />
+        } @else if (horarios().length === 0) {
+          <app-aviso tipo="vacio" mensaje="No quedan horarios libres ese día. Elegí otra fecha." />
+        } @else {
+          <p class="ayuda">Horarios libres (turnos de 30 minutos):</p>
+          <mat-chip-listbox
+            formControlName="hora"
+            aria-label="Horarios disponibles"
+            class="horarios"
+          >
+            @for (hora of horarios(); track hora) {
+              <mat-chip-option [value]="hora">{{ hora }}</mat-chip-option>
+            }
+          </mat-chip-listbox>
+        }
+        <div class="acciones">
+          <button matButton matStepperPrevious type="button">Atrás</button>
+          <button matButton="filled" matStepperNext type="button">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- 6. Nota y confirmación -->
+      <mat-step label="Nota y confirmación">
+        <mat-form-field appearance="outline" class="campo-ancho">
+          <mat-label>Motivo de la consulta</mat-label>
+          <textarea matInput formControlName="nota" rows="2" maxlength="40"></textarea>
+          <mat-hint align="end">{{ formulario.controls.nota.value?.length ?? 0 }}/40</mat-hint>
+          @if (formulario.controls.nota.hasError('required')) {
+            <mat-error>La nota es obligatoria.</mat-error>
+          } @else if (formulario.controls.nota.hasError('maxlength')) {
+            <mat-error>La nota no puede superar los 40 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-card appearance="outlined" class="resumen">
+          <mat-card-header>
+            <mat-card-title>Resumen del turno</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <dl>
+              <dt>Paciente</dt>
+              <dd>{{ paciente().nombre }} {{ paciente().apellido }}</dd>
+              <dt>Especialidad</dt>
+              <dd>{{ especialidadElegida()?.descripcion }}</dd>
+              <dt>Profesional</dt>
+              <dd>{{ medicoElegido()?.nombre }} {{ medicoElegido()?.apellido }}</dd>
+              <dt>Sede</dt>
+              <dd>{{ sedeElegida()?.nombre }} — {{ sedeElegida()?.direccion }}</dd>
+              <dt>Fecha</dt>
+              <dd>{{ valores().fecha | fecha: 'larga' }}</dd>
+              <dt>Hora</dt>
+              <dd>{{ valores().hora }} h</dd>
+              <dt>Cobertura</dt>
+              <dd>{{ paciente().cobertura ?? 'Sin cobertura registrada' }}</dd>
+            </dl>
+          </mat-card-content>
+        </mat-card>
+
+        @if (errorConfirmacion()) {
+          <app-aviso [mensaje]="errorConfirmacion()" />
+        }
+        @if (enviando()) {
+          <mat-progress-bar mode="indeterminate" />
+        }
+
+        <div class="acciones">
+          <button matButton matStepperPrevious type="button">Atrás</button>
+          <button matButton="filled" type="button" (click)="confirmar()" [disabled]="enviando()">
+            <mat-icon>check</mat-icon>
+            Confirmar turno
+          </button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </form>
+}

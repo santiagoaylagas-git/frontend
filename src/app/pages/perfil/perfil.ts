@@ -5,11 +5,14 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
 
 import { ETIQUETAS_ROL, Perfil as DatosPerfil } from '../../core/models/usuario.model';
 import { AuthService } from '../../core/services/auth.service';
 import { mensajeDeError } from '../../core/services/errores';
+import { Aviso } from '../../shared/components/aviso/aviso';
+import { Cargando } from '../../shared/components/cargando/cargando';
+import { FechaPipe } from '../../shared/pipes/fecha.pipe';
 
 @Component({
   selector: 'app-perfil',
@@ -20,7 +23,10 @@ import { mensajeDeError } from '../../core/services/errores';
     MatChipsModule,
     MatDividerModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
+    RouterLink,
+    FechaPipe,
+    Aviso,
+    Cargando,
   ],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',

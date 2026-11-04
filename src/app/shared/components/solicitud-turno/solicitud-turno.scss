@@ -1,0 +1,55 @@
+.pasos {
+  background: transparent;
+}
+
+.campo {
+  width: 100%;
+  max-width: 420px;
+}
+
+.campo-ancho {
+  width: 100%;
+  max-width: 560px;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ayuda,
+.elegido {
+  margin: 0 0 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.calendario {
+  max-width: 340px;
+  margin-bottom: 0.75rem;
+}
+
+.horarios {
+  max-width: 560px;
+}
+
+.resumen {
+  max-width: 560px;
+  margin-top: 0.5rem;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.25rem;
+  margin: 0.5rem 0 0;
+}
+
+dt {
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+dd {
+  margin: 0;
+}

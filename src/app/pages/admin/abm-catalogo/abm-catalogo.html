@@ -1,0 +1,76 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1>
+      <mat-icon>{{ config.icono }}</mat-icon
+      >{{ config.titulo }}
+    </h1>
+    <p class="subtitulo">Alta, modificación y baja de {{ config.titulo.toLowerCase() }}.</p>
+  </div>
+  <button matButton="filled" (click)="abrirFormulario()">
+    <mat-icon>add</mat-icon>
+    Nueva {{ config.singular }}
+  </button>
+</div>
+
+<div class="filtros">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      [value]="busqueda()"
+      (input)="busqueda.set($any($event.target).value)"
+      autocomplete="off"
+    />
+    @if (busqueda()) {
+      <button matIconButton matSuffix aria-label="Limpiar búsqueda" (click)="busqueda.set('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</div>
+
+@if (cargando()) {
+  <app-cargando />
+} @else if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+} @else if (filtrados().length === 0) {
+  <app-aviso
+    tipo="vacio"
+    [mensaje]="
+      busqueda()
+        ? 'No hay resultados para la búsqueda.'
+        : 'Todavía no hay ' + config.titulo.toLowerCase() + ' cargadas.'
+    "
+  />
+} @else {
+  <table mat-table [dataSource]="filtrados()" class="tabla">
+    @for (campo of config.campos; track campo.clave) {
+      <ng-container [matColumnDef]="campo.clave">
+        <th mat-header-cell *matHeaderCellDef>{{ campo.etiqueta }}</th>
+        <td mat-cell *matCellDef="let item">{{ item[campo.clave] }}</td>
+      </ng-container>
+    }
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let item" class="columna-acciones">
+        <button
+          matIconButton
+          matTooltip="Modificar"
+          aria-label="Modificar"
+          (click)="abrirFormulario(item)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button matIconButton matTooltip="Eliminar" aria-label="Eliminar" (click)="eliminar(item)">
+          <mat-icon class="icono-peligro">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+  </table>
+  <p class="texto-secundario">{{ filtrados().length }} de {{ items().length }} registros.</p>
+}

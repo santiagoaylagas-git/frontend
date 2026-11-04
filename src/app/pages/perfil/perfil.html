@@ -1,11 +1,7 @@
 <h1 class="titulo">Mi perfil</h1>
 
 @if (error()) {
-  <p class="error-backend" role="alert">
-    <mat-icon>error_outline</mat-icon>
-    <span>{{ error() }}</span>
-    <button matButton type="button" (click)="recargar()">Reintentar</button>
-  </p>
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="recargar()" />
 }
 
 @if (datos(); as perfil) {
@@ -44,27 +40,35 @@
         <mat-list-item>
           <mat-icon matListItemIcon>cake</mat-icon>
           <span matListItemTitle>Fecha de nacimiento</span>
-          <span matListItemLine>{{ perfil.fecha_nacimiento }}</span>
+          <span matListItemLine>{{ perfil.fecha_nacimiento | fecha }}</span>
         </mat-list-item>
         @if (perfil.id_cobertura !== null) {
           <mat-list-item>
             <mat-icon matListItemIcon>local_hospital</mat-icon>
             <span matListItemTitle>Cobertura</span>
-            <span matListItemLine>Cobertura n.º {{ perfil.id_cobertura }}</span>
+            <span matListItemLine>{{
+              perfil.cobertura ?? 'Cobertura n.º ' + perfil.id_cobertura
+            }}</span>
           </mat-list-item>
         }
         @if (perfil.id_sede !== null) {
           <mat-list-item>
             <mat-icon matListItemIcon>domain</mat-icon>
             <span matListItemTitle>Sede</span>
-            <span matListItemLine>Sede n.º {{ perfil.id_sede }}</span>
+            <span matListItemLine>{{ perfil.sede ?? 'Sede n.º ' + perfil.id_sede }}</span>
           </mat-list-item>
         }
       </mat-list>
     </mat-card-content>
+    @if (perfil.rol === 'paciente') {
+      <mat-card-actions align="end">
+        <a matButton="filled" routerLink="/paciente/datos">
+          <mat-icon>edit</mat-icon>
+          Modificar mis datos
+        </a>
+      </mat-card-actions>
+    }
   </mat-card>
 } @else if (cargando()) {
-  <div class="cargando">
-    <mat-spinner diameter="40" />
-  </div>
+  <app-cargando />
 }

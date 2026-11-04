@@ -1,14 +1,10 @@
 <app-header (alternarMenu)="alternarMenu()" />
 
-<mat-sidenav-container class="contenedor" [hasBackdrop]="true">
+<!-- La aplicación está pensada para escritorio: el menú lateral queda fijo y se puede ocultar. -->
+<mat-sidenav-container class="contenedor">
   @if (estaLogueado()) {
-    <mat-sidenav
-      mode="over"
-      [opened]="menuAbierto()"
-      (closedStart)="cerrarMenu()"
-      class="lateral"
-    >
-      <app-menu (navego)="cerrarMenu()" />
+    <mat-sidenav mode="side" [opened]="menuAbierto()" class="lateral">
+      <app-menu />
     </mat-sidenav>
   }
 

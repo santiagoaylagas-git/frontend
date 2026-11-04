@@ -1,0 +1,86 @@
+<div class="encabezado-pagina">
+  <div>
+    <h1><mat-icon>calendar_month</mat-icon>Mi agenda</h1>
+    <p class="subtitulo">{{ fecha() | fecha: 'larga' }}</p>
+  </div>
+  <button matButton="filled" (click)="agregar()" [disabled]="!!error()">
+    <mat-icon>add</mat-icon>
+    Agregar rango horario
+  </button>
+</div>
+
+<div class="filtros">
+  <button matIconButton matTooltip="Día anterior" aria-label="Día anterior" (click)="moverDia(-1)">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha</mat-label>
+    <input
+      matInput
+      [matDatepicker]="selectorFecha"
+      [value]="fechaComoDate()"
+      (dateChange)="cambiarFecha($event.value)"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+    <mat-datepicker #selectorFecha />
+  </mat-form-field>
+  <button matIconButton matTooltip="Día siguiente" aria-label="Día siguiente" (click)="moverDia(1)">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  <button matButton (click)="irAHoy()">Hoy</button>
+</div>
+
+@if (cargando()) {
+  <app-cargando />
+} @else if (error()) {
+  <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargarDatosDelMedico()" />
+} @else if (rangos().length === 0) {
+  <app-aviso tipo="vacio" mensaje="No tenés rangos horarios cargados para este día." />
+} @else {
+  <table mat-table [dataSource]="rangos()" class="tabla">
+    <ng-container matColumnDef="horario">
+      <th mat-header-cell *matHeaderCellDef>Horario</th>
+      <td mat-cell *matCellDef="let r">{{ r.hora_entrada }} a {{ r.hora_salida }} h</td>
+    </ng-container>
+    <ng-container matColumnDef="especialidad">
+      <th mat-header-cell *matHeaderCellDef>Especialidad</th>
+      <td mat-cell *matCellDef="let r">{{ r.especialidad }}</td>
+    </ng-container>
+    <ng-container matColumnDef="sede">
+      <th mat-header-cell *matHeaderCellDef>Sede</th>
+      <td mat-cell *matCellDef="let r">{{ r.sede }}</td>
+    </ng-container>
+    <ng-container matColumnDef="turnos">
+      <th mat-header-cell *matHeaderCellDef>Turnos confirmados</th>
+      <td mat-cell *matCellDef="let r">{{ r.turnos_confirmados }}</td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+      <td mat-cell *matCellDef="let r" class="columna-acciones">
+        <button matIconButton matTooltip="Modificar" aria-label="Modificar" (click)="modificar(r)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <!-- No se puede eliminar un rango con turnos confirmados: el botón queda deshabilitado. -->
+        <span
+          [matTooltip]="
+            r.turnos_confirmados > 0
+              ? 'No se puede eliminar: tiene ' + r.turnos_confirmados + ' turno(s) confirmado(s)'
+              : 'Eliminar'
+          "
+        >
+          <button
+            matIconButton
+            aria-label="Eliminar"
+            [disabled]="r.turnos_confirmados > 0"
+            (click)="eliminar(r)"
+          >
+            <mat-icon [class.icono-peligro]="r.turnos_confirmados === 0">delete</mat-icon>
+          </button>
+        </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+  </table>
+}

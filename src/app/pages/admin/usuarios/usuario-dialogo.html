@@ -1,0 +1,188 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+
+<mat-dialog-content>
+  @if (cargando()) {
+    <app-cargando />
+  } @else if (error()) {
+    <app-aviso [mensaje]="error()" [reintentable]="true" (reintentar)="cargar()" />
+  } @else {
+    @if (enviando()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    <form
+      [formGroup]="formulario"
+      id="formulario-usuario"
+      (ngSubmit)="guardar()"
+      class="formulario"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de usuario</mat-label>
+        <mat-select formControlName="rol">
+          @if (esEdicion) {
+            <mat-option [value]="formulario.controls.rol.value">
+              {{ etiquetas[formulario.controls.rol.value] }}
+            </mat-option>
+          } @else {
+            @for (opcion of rolesAlta; track opcion.rol) {
+              <mat-option [value]="opcion.rol">{{ opcion.etiqueta }}</mat-option>
+            }
+          }
+        </mat-select>
+        @if (esEdicion) {
+          <mat-hint>El tipo de usuario no se puede modificar.</mat-hint>
+        } @else {
+          <mat-hint>Los pacientes se registran solos o los da de alta un operador.</mat-hint>
+        }
+      </mat-form-field>
+
+      <div class="fila">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" />
+          @if (formulario.controls.nombre.hasError('required')) {
+            <mat-error>El nombre es obligatorio.</mat-error>
+          } @else {
+            <mat-error>Máximo 30 caracteres.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="apellido" />
+          @if (formulario.controls.apellido.hasError('required')) {
+            <mat-error>El apellido es obligatorio.</mat-error>
+          } @else {
+            <mat-error>Máximo 30 caracteres.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="fila">
+        <mat-form-field appearance="outline">
+          <mat-label>DNI</mat-label>
+          <input matInput formControlName="dni" inputmode="numeric" />
+          @if (formulario.controls.dni.hasError('required')) {
+            <mat-error>El DNI es obligatorio.</mat-error>
+          } @else {
+            <mat-error>El DNI debe tener 7 u 8 dígitos.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de nacimiento</mat-label>
+          <input
+            matInput
+            [matDatepicker]="selectorNacimiento"
+            [max]="fechaMaxima"
+            formControlName="fecha_nacimiento"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="selectorNacimiento" />
+          <mat-datepicker #selectorNacimiento startView="multi-year" />
+          @if (formulario.controls.fecha_nacimiento.hasError('matDatepickerMax')) {
+            <mat-error>La fecha no puede ser futura.</mat-error>
+          } @else {
+            <mat-error>La fecha es obligatoria (DD/MM/AAAA).</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="fila">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+          @if (formulario.controls.email.hasError('required')) {
+            <mat-error>El email es obligatorio.</mat-error>
+          } @else {
+            <mat-error>Email inválido (máximo 30 caracteres).</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono (opcional)</mat-label>
+          <input matInput formControlName="telefono" inputmode="tel" />
+          <mat-error>Entre 6 y 10 dígitos.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ esEdicion ? 'Nueva contraseña (opcional)' : 'Contraseña' }}</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        <button
+          matIconButton
+          matSuffix
+          type="button"
+          [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+          (click)="ocultarPassword.set(!ocultarPassword())"
+        >
+          <mat-icon>{{ ocultarPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-hint>
+          {{ esEdicion ? 'Dejala vacía para mantener la actual.' : 'Mínimo 6 caracteres.' }}
+        </mat-hint>
+        @if (formulario.controls.password.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        } @else {
+          <mat-error>Mínimo 6 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (llevaSede()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Sede</mat-label>
+          <mat-select formControlName="id_sede">
+            @for (sede of sedes(); track sede.id) {
+              <mat-option [value]="sede.id">{{ sede.nombre }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>Elegí la sede.</mat-error>
+        </mat-form-field>
+      }
+
+      @if (rol() === 'medico') {
+        <mat-form-field appearance="outline">
+          <mat-label>Especialidades</mat-label>
+          <mat-select formControlName="especialidades" multiple>
+            @for (especialidad of especialidades(); track especialidad.id) {
+              <mat-option [value]="especialidad.id">{{ especialidad.descripcion }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>Elegí al menos una especialidad.</mat-error>
+        </mat-form-field>
+      }
+
+      @if (rol() === 'paciente') {
+        <mat-form-field appearance="outline">
+          <mat-label>Cobertura</mat-label>
+          <mat-select formControlName="id_cobertura">
+            @for (cobertura of coberturas(); track cobertura.id) {
+              <mat-option [value]="cobertura.id">{{ cobertura.nombre }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>Elegí la cobertura.</mat-error>
+        </mat-form-field>
+      }
+
+      @if (rol() === 'admin') {
+        <app-aviso tipo="info" mensaje="El administrador no tiene sede: opera sobre todas." />
+      }
+
+      @if (errorBackend()) {
+        <app-aviso [mensaje]="errorBackend()" />
+      }
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton mat-dialog-close type="button">Cancelar</button>
+  <button
+    matButton="filled"
+    type="submit"
+    form="formulario-usuario"
+    [disabled]="enviando() || cargando() || !!error()"
+  >
+    Guardar
+  </button>
+</mat-dialog-actions>
