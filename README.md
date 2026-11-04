@@ -3,14 +3,28 @@
 Aplicación Angular del trabajo práctico integrador de Programación 2. Consume la API REST
 del backend, que vive en un repositorio aparte:
 
-| Repositorio | Rama de la entrega |
-|-------------|--------------------|
-| Frontend: https://github.com/santiagoaylagas-git/frontend | `entrega-frontend` |
-| Backend: https://github.com/santiagoaylagas-git/backend | `entrega-backend` (semanas 1 a 4 + cambios para el frontend) |
+- **Frontend:** https://github.com/santiagoaylagas-git/frontend
+- **Backend:** https://github.com/santiagoaylagas-git/backend
 
-> **¿Primera vez?** Seguí la guía paso a paso [`GUIA-INSTALACION.md`](GUIA-INSTALACION.md): instalación
-> de Node, Git y XAMPP, cómo abrir el proyecto en Visual Studio Code o Antigravity y solución de
-> problemas frecuentes.
+> **¿Primera vez?** Seguí la guía paso a paso [`docs/GUIA-INSTALACION.md`](docs/GUIA-INSTALACION.md):
+> instalación de Node, Git y XAMPP, cómo abrir el proyecto en Visual Studio Code o Antigravity y
+> solución de problemas frecuentes. La guía de flujos con capturas de cada pantalla está en
+> [`docs/Guia_flujos_Clinica_Virtual.pdf`](docs/Guia_flujos_Clinica_Virtual.pdf).
+
+## Ramas
+
+| Rama | Contenido |
+|------|-----------|
+| `main` | Versión final y vigente (igual a `entrega-frontend`) |
+| `entrega-frontend` | Entrega final: semanas 2 a 4, los cuatro roles completos |
+| `entrega-frontend-1` | Semana 1: setup, Angular Material, layout y autenticación |
+
+## Documentación (`docs/`)
+
+| Archivo | Contenido |
+|---------|-----------|
+| `GUIA-INSTALACION.md` / `.pdf` | Cómo levantar el proyecto desde cero en VS Code o Antigravity |
+| `Guia_flujos_Clinica_Virtual.pdf` | Flujos de cada rol con capturas, arquitectura, reglas de negocio y carpetas |
 
 Esta es la **entrega final del frontend** (semanas 2 a 4): la aplicación queda completa para
 los cuatro roles — paciente, médico, operador y administrador — y lista para la defensa.
@@ -41,17 +55,16 @@ Se necesitan Node.js, Git y MySQL o MariaDB corriendo (por ejemplo, con XAMPP: i
 módulo **MySQL** desde el panel de control).
 
 ```bash
-git clone -b entrega-backend https://github.com/santiagoaylagas-git/backend
-git clone -b entrega-frontend https://github.com/santiagoaylagas-git/frontend
+git clone https://github.com/santiagoaylagas-git/backend
+git clone https://github.com/santiagoaylagas-git/frontend
 ```
 
 ### 1. Backend y base de datos
 
-El código de la API está en la subcarpeta `backend/` del repositorio del backend; el script de la
-base (`clinica_ampliada.sql.txt`) está en la raíz de ese repositorio.
+El script de la base está en `backend/database/clinica_ampliada.sql.txt`.
 
 ```bash
-cd backend/backend
+cd backend
 npm install
 cp .env.example .env        # en Windows: copy .env.example .env
 ```

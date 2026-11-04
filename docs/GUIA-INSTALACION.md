@@ -63,26 +63,27 @@ https://www.postman.com/downloads — para probar la API con la colección del p
 1. Crear una carpeta vacía, por ejemplo `C:\clinica`.
 2. En VS Code / Antigravity: **File → Open Folder…** (Archivo → Abrir carpeta…) y elegir `C:\clinica`.
 3. Abrir una terminal: **Terminal → New Terminal** (o `` Ctrl + ` ``).
-4. Clonar los dos repositorios **con su rama**:
+4. Clonar los dos repositorios (la rama `main` tiene la versión final):
    ```bash
-   git clone -b entrega-backend https://github.com/santiagoaylagas-git/backend
-   git clone -b entrega-frontend https://github.com/santiagoaylagas-git/frontend
+   git clone https://github.com/santiagoaylagas-git/backend
+   git clone https://github.com/santiagoaylagas-git/frontend
    ```
 5. Queda así:
    ```
    C:\clinica
-   ├── backend\              ← repositorio del backend
-   │   ├── backend\          ← código de la API (acá se corre npm)
-   │   └── clinica_ampliada.sql.txt
-   └── frontend\             ← repositorio del frontend (acá se corre npm)
+   ├── backend\              ← API (acá se corre npm)
+   │   ├── src\              ← código del servidor
+   │   ├── database\         ← clinica_ampliada.sql.txt (la base de datos)
+   │   └── postman\          ← colección de Postman
+   └── frontend\             ← aplicación Angular (acá se corre npm)
+       ├── src\              ← código de la aplicación
+       └── docs\             ← esta guía y la guía de flujos en PDF
    ```
 
 ### Opción B — descargando el ZIP desde GitHub
-1. En GitHub, **elegir primero la rama** en el selector (arriba a la izquierda):
-   `entrega-backend` para el backend y `entrega-frontend` para el frontend.
-   ⚠️ La rama `main` está vacía: si se baja `main`, no hay código.
+1. Entrar a cada repositorio en GitHub (rama `main`, la que se abre por defecto).
 2. **Code → Download ZIP**, descomprimir dentro de `C:\clinica` y renombrar las carpetas a
-   `backend` y `frontend`.
+   `backend` y `frontend` (GitHub las descarga como `backend-main` y `frontend-main`).
 
 ### Abrir todo en el editor
 Con `C:\clinica` abierto se ven las dos carpetas en el explorador de la izquierda. Si el editor
@@ -123,7 +124,7 @@ es la política de PowerShell. Hay dos soluciones (alcanza con una):
 ### 4.1 Entrar a la carpeta de la API
 En la terminal:
 ```bash
-cd C:\clinica\backend\backend
+cd C:\clinica\backend
 ```
 
 ### 4.2 Instalar dependencias (la primera vez)
@@ -138,7 +139,7 @@ copy .env.example .env
 ```
 (en macOS/Linux: `cp .env.example .env`)
 
-Abrir `backend\backend\.env` en el editor. Con XAMPP por defecto solo hay que cambiar
+Abrir `backend\.env` en el editor. Con XAMPP por defecto solo hay que cambiar
 `JWT_SECRET` por cualquier texto:
 
 ```ini
@@ -177,7 +178,7 @@ Listo: 10 tablas creadas con los datos de prueba.
 > correrlo el mismo día de la defensa.
 
 Alternativa sin terminal: en phpMyAdmin crear la base `clinica` y usar **Importar** con el
-archivo `C:\clinica\backend\clinica_ampliada.sql.txt`.
+archivo `C:\clinica\backend\database\clinica_ampliada.sql.txt`.
 
 ### 4.5 Iniciar la API
 ```bash
@@ -264,7 +265,7 @@ y pedir permiso antes de cada uno.
 
 ## 8. Probar la API con Postman (opcional)
 
-1. Postman → **Import** → elegir `C:\clinica\backend\backend\postman\clinica.postman_collection.json`.
+1. Postman → **Import** → elegir `C:\clinica\backend\postman\clinica.postman_collection.json`.
 2. Con el backend corriendo y la base recién importada, clic derecho en la colección →
    **Run collection** → **Run**. Son 112 requests; los tokens e ids se guardan solos.
 3. Antes de volver a correrla completa, reimportar la base (`npm run db:importar`).
@@ -275,7 +276,7 @@ y pedir permiso antes de cada uno.
 
 1. Abrir XAMPP → **Start** en MySQL.
 2. Abrir `C:\clinica` en el editor.
-3. Terminal 1: `cd backend\backend` → (opcional) `npm run db:importar` → `npm run dev`.
+3. Terminal 1: `cd backend` → (opcional) `npm run db:importar` → `npm run dev`.
 4. Terminal 2: `cd frontend` → `npm start`.
 5. Abrir http://localhost:4200.
 
@@ -310,5 +311,5 @@ Es igual, con estas diferencias:
 - MySQL: XAMPP para macOS/Linux, o `brew install mysql` / `sudo apt install mariadb-server`.
   Si se usa un usuario distinto de `root` sin contraseña, ponerlo en el `.env`.
 - Copiar el `.env`: `cp .env.example .env`.
-- Las rutas usan `/`: `cd ~/clinica/backend/backend`.
+- Las rutas usan `/`: `cd ~/clinica/backend`.
 - No existe el problema de PowerShell de la sección 3.
