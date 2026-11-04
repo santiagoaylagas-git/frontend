@@ -6,7 +6,11 @@ del backend, que vive en un repositorio aparte:
 | Repositorio | Rama de la entrega |
 |-------------|--------------------|
 | Frontend: https://github.com/santiagoaylagas-git/frontend | `entrega-frontend` |
-| Backend: https://github.com/santiagoaylagas-git/backend | `claude/focused-keller-46bm9i` (semanas 1 a 4 + cambios para el frontend) |
+| Backend: https://github.com/santiagoaylagas-git/backend | `entrega-backend` (semanas 1 a 4 + cambios para el frontend) |
+
+> **¿Primera vez?** Seguí la guía paso a paso [`GUIA-INSTALACION.md`](GUIA-INSTALACION.md): instalación
+> de Node, Git y XAMPP, cómo abrir el proyecto en Visual Studio Code o Antigravity y solución de
+> problemas frecuentes.
 
 Esta es la **entrega final del frontend** (semanas 2 a 4): la aplicación queda completa para
 los cuatro roles — paciente, médico, operador y administrador — y lista para la defensa.
@@ -37,7 +41,7 @@ Se necesitan Node.js, Git y MySQL o MariaDB corriendo (por ejemplo, con XAMPP: i
 módulo **MySQL** desde el panel de control).
 
 ```bash
-git clone -b claude/focused-keller-46bm9i https://github.com/santiagoaylagas-git/backend
+git clone -b entrega-backend https://github.com/santiagoaylagas-git/backend
 git clone -b entrega-frontend https://github.com/santiagoaylagas-git/frontend
 ```
 
